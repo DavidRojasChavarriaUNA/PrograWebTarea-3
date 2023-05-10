@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Tarea 3</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        .u-full-width tr:hover {
+            color: #FFF;
+            background-color: #33C3F0;
+            border-color: #33C3F0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="row">
+            <button disabled="disabled" class="twelve columns button-primary">
+                <h5>Formulario de contactos</h5>
+            </button>
+        </div>
+        <div class="row">
+            <div class="five columns" style="height: 520px; border-right: 1px solid black; padding-right: 4%;">
+                <p>Todos los contactos</p>
+                <div style="height: 300px; border: 1px solid black; overflow: auto;">
+                    <template v-if="!ListaContactos.length > 0">
+                        <p>No hay contactos registrados</p>
+                    </template>
+                    <template v-else>
+                        <table class="u-full-width">
+                            <tbody>
+                                <tr v-for="contacto in ListaContactos" v-on:click="showContact(contacto.id)">
+                                    <td style="padding: 0 5px;">{{ contacto.name }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                </div>
+                <button type="button" class="button-primary" style="float: right; margin-top: 20px;"
+                    v-on:click="AddContact">Nuevo</button>
+            </div>
+            <div class="seven columns" style="height: 520px; ">
+                <form>
+                    <div class="row">
+                        <div class="twelve columns">
+                            <label for="name">Nombre</label>
+                            <input class="u-full-width" type="text" placeholder="Nombre" id="name"
+                                v-model="Contacto.name">
+                        </div>
+                        <div class="twelve columns">
+                            <label for="work">Trabajo</label>
+                            <input class="u-full-width" type="text" placeholder="Trabajo" id="work"
+                                v-model="Contacto.work">
+                        </div>
+                        <div class="twelve columns">
+                            <label for="mobile">Móvil</label>
+                            <input class="u-full-width" type="text" placeholder="Móvil" id="mobile"
+                                v-model="Contacto.mobile">
+                        </div>
+                        <div class="twelve columns">
+                            <label for="email">Correo electrónico</label>
+                            <input class="u-full-width" type="email" placeholder="Correo electrónico" id="email"
+                                v-model="Contacto.email">
+                        </div>
+                        <div class="twelve columns">
+                            <label for="address">Dirección</label>
+                            <textarea class="u-full-width" placeholder="Correo electrónico" id="address"
+                                v-model="Contacto.address"></textarea>
+                        </div>
+                        <div class="twelve columns">
+                            <button type="button" class="button" style="float: left;"
+                                v-on:click="deleteContact">Eliminar</button>
+                            <button type="button" class="button-primary" style="float: right;"
+                                v-on:click="saveContact">Guardar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 15px">
+            <button disabled="disabled" class="twelve columns button-primary">
+                Tarea 3 - David Rojas Chavarria UNA
+            </button>
+        </div>
+    </div>
+    <script>
+        const {
+            createApp
+        } = Vue
+
+        createApp({
+            data() {
+                return {
+                    ListaContactos: [],
+                    Contacto: this.NewContact()
+                }
+            },
+            methods: {
+                NewContact: function (event) {
+                    return {
+                        id: 0,
+                        name: '',
+                        work: '',
+                        mobile: '',
+                        email: '',
+                        address: '',
+                    };
+                },
+                showContact: function (id, event) {
+                    this.Contacto = this.ListaContactos.find(e => e.id == id);
+                },
+                AddContact: function (event) {
+                    this.Contacto = this.NewContact();
+                },
+                saveContact: function (event) {
+                    if (this.Contacto.id === 0) {
+                        this.Contacto.id = Date.now();
+                        this.ListaContactos.push(this.Contacto);
+                    } else {
+                        const index = this.ListaContactos.findIndex(e => e.id == this.Contacto.id);
+                        this.ListaContactos[index] = this.Contacto;
+                    }
+                    this.Contacto = this.NewContact();
+                },
+                deleteContact: function (event) {
+                    if (this.Contacto.id === 0) {
+                        alert("No puede borrar un elemento sin guardar.");
+                    }
+                    const index = this.ListaContactos.findIndex(e => e.id == this.Contacto.id);
+                    this.ListaContactos.splice(index, 1);
+                    this.Contacto = this.NewContact();
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
